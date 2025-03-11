@@ -59,9 +59,7 @@ def convertToRawUrl(githubUrl):
 
 def download(url, filename):
     fileloc = directory + filename
-
     r = requests.get(convertToRawUrl(url))
-
     f = open(fileloc,'w')
     f.write(r.content.decode())
 
@@ -99,7 +97,8 @@ makeDirectory("data")
 makeDirectory("temp")
 data = pv.PermaVar("", "data")
 data.set("version", 0.1)
-data.set("domains", {})
+if not os.path.exists("data"):
+    data.set("domains", {})
 deleteFile("temp/current.exe")
 deleteFile("temp/install.aotl")
 domains = data.get("domains")
@@ -112,11 +111,10 @@ else:
     time.sleep(3)
     sys.exit(1)
 
-
 if url in domains:
     url = domains[url]
+    downloadBinary(url, "current.exe")
+    runEXE("temp\\current.exe")
 
-
-runURL(url)
-
-
+else:
+    runURL(url)
